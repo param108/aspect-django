@@ -16,5 +16,8 @@ Including another URLconf
 from django.conf.urls import url
 from . import views
 urlpatterns = [
-    url(r'^register/', views.register)
+    url(r'^register/', views.register),
+    url(r'^login/', views.login),
+    url(r'^getcsrf/', views.getcsrf),
+    url(r'^verify/', views.verify)
 ]

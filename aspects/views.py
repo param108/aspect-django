@@ -1,7 +1,10 @@
 from django.shortcuts import render
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.http import JsonResponse
-from models import Aspect, Future, Moment, belt
+from models import Aspect, Future, Moment, belt, SimpleValue
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
+
 def getAspectsObject():
   aspects = Aspect.objects.all()
   ret = []
@@ -41,6 +44,7 @@ def getAspectsObject():
   return ret
 
 # Create your views here.
+@login_required
 @ensure_csrf_cookie
 def aspectsList(request):
   return JsonResponse(
@@ -60,3 +64,43 @@ def addAspect(request):
       'data': getAspectsObject()
     }
   )
+
+@csrf_exempt
+def simpleValueRead(request):
+  key = request.POST.get("key", -1)
+  tid = request.POST.get("tid", -1)
+  name = request.POST.get("name", "")
+  ret = None
+  if key == -1:
+    ret = SimpleValue.objects.all().order_by('id');
+    if len(ret) == 0:
+      s = SimpleValue();
+      s.save()
+      return JsonResponse({'val': "",
+                           'tid': tid,
+                           'key': s.id,
+                           'name': name});
+    return JsonResponse({'val': ret[0].val,
+                         'tid': tid,
+                         'key': ret[0].id,
+                         'name': name});
+  else:
+    ret = SimpleValue.objects.get(id=key)
+    return JsonResponse({'val': ret.val,
+                         'tid': tid,
+                         'key': ret.id,
+                         'name': name})
+
+@csrf_exempt
+def simpleValueWrite(request):
+  key = request.POST.get("key", -1)
+  name = request.POST.get("name", "")
+  tid = request.POST.get("tid", -1)
+  val = request.POST.get("val", "")
+  ret = SimpleValue.objects.get(id=key)
+  ret.val = val
+  ret.save();
+  return JsonResponse({'val': ret.val,
+                         'tid': tid,
+                       'key': ret.id,
+                       'name': name})

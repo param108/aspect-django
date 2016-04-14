@@ -17,5 +17,7 @@ from django.conf.urls import url
 from . import views
 urlpatterns = [
     url(r'^list/', views.aspectsList),
-    url(r'^addAspect/', views.addAspect)
+    url(r'^addAspect/', views.addAspect),
+    url(r'^value/read', views.simpleValueRead),
+    url(r'^value/write', views.simpleValueWrite)
 ]

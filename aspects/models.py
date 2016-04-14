@@ -37,3 +37,6 @@ class Moment (models.Model):
   proof = models.ImageField(null=True)
   # in progress, achieved, abandoned
   status = models.CharField(max_length=30,default="in progress")
+
+class SimpleValue (models.Model):
+  val =  models.CharField(max_length=200)
