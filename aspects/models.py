@@ -1,5 +1,5 @@
 from __future__ import unicode_literals
-
+from django.contrib.auth.models import User
 from django.db import models
 
 __belt_names=['white','yellow','gold','orange','green',
@@ -12,6 +12,7 @@ def belt(idx):
 
 # Create your models here.
 class Aspect (models.Model):
+  user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
   name = models.CharField(max_length=100)
   # steps from one belt to the next
   score = models.IntegerField(default=0)

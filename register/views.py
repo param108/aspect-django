@@ -61,16 +61,12 @@ def verify(request):
     code = request.GET.get('code',"");
     email = request.GET.get('email',"");
     if len(code) == 0 or len(email) == 0:
-      print "0\n"
       return HttpResponse("Invalid");
     user = User.objects.get(username__exact=email)
     if user and user.is_active == False:
-      print "1\n"
       ev = EmailVerify.objects.get(user=user)
       if ev:
-        print "2\n"
         if ev.secret == code:
-          print "3\n"
           user.is_active = True
           user.save()
           ev.is_verified = True
@@ -78,6 +74,5 @@ def verify(request):
           return HttpResponse("Success");
       return HttpResponse("Invalid");
     else:
-      print "4\n"+str(user.is_active)
       return HttpResponse("Invalid");
   return HttpResponse("Invalid");

@@ -5,8 +5,8 @@ from models import Aspect, Future, Moment, belt, SimpleValue
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 
-def getAspectsObject():
-  aspects = Aspect.objects.all()
+def getAspectsObject(user):
+  aspects = Aspect.objects.filter(user=user)
   ret = []
   for aspect in aspects:
     obj = {}
@@ -47,9 +47,13 @@ def getAspectsObject():
 @login_required
 @ensure_csrf_cookie
 def aspectsList(request):
+  tid = request.POST.get("tid", -1)
+  name = request.POST.get("name", "")
   return JsonResponse(
     { 'status': 0, 
-      'data': getAspectsObject()
+      'data': getAspectsObject(request.user),
+      'tid': tid,
+      'name': name,
     }
   )
 
